@@ -2,3 +2,5 @@
 HR/.vs/
 HR/obj/
 HR/bin/
+
+HR/BenchmarkDotNet.Artifacts/
