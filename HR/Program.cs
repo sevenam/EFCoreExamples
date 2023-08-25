@@ -90,16 +90,18 @@ static List<Employee> ReadCSV(string filePath)
 }
 
 
-var employees = ReadCSV("data.csv");
+//var employees = ReadCSV("data.csv");
 
-Console.WriteLine($"{employees.Count} row(s) found");
+//Console.WriteLine($"{employees.Count} row(s) found");
 
-using var context = new HRContext();
-foreach (var employee in employees)
-{
-    context.Add(employee);
-}
+//using var context = new HRContext();
+//foreach (var employee in employees)
+//{
+//    context.Add(employee);
+//}
 
-context.SaveChanges();
+//context.SaveChanges();
+
+
 
 
