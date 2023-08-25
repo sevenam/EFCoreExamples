@@ -1,5 +1,5 @@
-﻿using HR;
-
+﻿using BenchmarkDotNet.Running;
+using HR;
 
 static List<Employee> ReadCSV(string filePath)
 {
@@ -90,6 +90,8 @@ static List<Employee> ReadCSV(string filePath)
 }
 
 
+
+
 //var employees = ReadCSV("data.csv");
 
 //Console.WriteLine($"{employees.Count} row(s) found");
@@ -102,6 +104,7 @@ static List<Employee> ReadCSV(string filePath)
 
 //context.SaveChanges();
 
+BenchmarkRunner.Run<EfCoreBenchmarks>();
 
 
 
