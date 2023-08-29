@@ -19,25 +19,25 @@ namespace HR
   [RPlotExporter] // plot results with R
   [MeanColumn] // mean of the results
   [BaselineColumn]
-  public class BenchAsNoTracking
+  public class BenchExplicitIncludes
   {
     private readonly HRContext context;
 
-    public BenchAsNoTracking()
+    public BenchExplicitIncludes()
     {
       context = new HRContext();
     }
 
     [Benchmark(Baseline = true)]
-    public void Employees()
+    public void EmployeesImplicitInclude()
     {
-      context.Employees.Include(x => x.Skills).Include(x => x.Department).ToList();
+      var result = context.Employees.Select(x => new { x.FirstName, x.LastName, x.Department.Name }).ToList();
     }
 
     [Benchmark]
-    public void EmployeeAsNoTracking()
+    public void EmployeesExplicitInclude()
     {
-      context.Employees.Include(x => x.Skills).Include(x => x.Department).ToList();
+      var result = context.Employees.Include(x => x.Department).Select(y => new { y.FirstName, y.LastName, y.Department.Name }).ToList();
     }
 
 

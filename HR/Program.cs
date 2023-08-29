@@ -107,10 +107,13 @@ static List<Employee> ReadCSV(string filePath)
 
 
 
-// debugging:
-//var bm = new EfCoreBenchmarks();
-//bm.IQueryableEmployees();
-//bm.IEnumerableEmployees();
+//debugging:
+//var noTracking = new BenchAsNoTracking();
+//noTracking.EmployeeAsNoTracking();
+//var explicitIncludes = new BenchExplicitIncludes();
+//explicitIncludes.EmployeesImplicitInclude();
+//explicitIncludes.EmployeesExplicitInclude();
+
 
 
 
@@ -121,7 +124,10 @@ static List<Employee> ReadCSV(string filePath)
 //BenchmarkRunner.Run<BenchIEnumerableVsIQueryable>();
 
 // #2 AsNoTracking: tracks entities in case you do SaveChanges() on the context - can be used when you only want to read data
-BenchmarkRunner.Run<BenchAsNoTracking>(); // database provider could matter (sqlite/mssql/postgres/etc)
+//BenchmarkRunner.Run<BenchAsNoTracking>(); // database provider could matter (sqlite/mssql/postgres/etc)
+
+// #3 ExplicitIncludes: The includes will explicitly force inclusion of data even though it is never used
+BenchmarkRunner.Run<BenchExplicitIncludes>(); // even if you use select the whole included entity will still be included
 
 
 
