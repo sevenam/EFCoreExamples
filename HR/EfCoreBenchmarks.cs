@@ -11,46 +11,60 @@ namespace HR
 
   //[SimpleJob(RuntimeMoniker.Net60)]
   [SimpleJob(RuntimeMoniker.Net70)]
-  [RPlotExporter]
+  [MemoryDiagnoser(false)] // include memory allocation results
+  [MinIterationCount(1)] // min number of iterations
+  [MaxIterationCount(2)] // max number of iterations
+  [RankColumn] // rank the results
+  [RPlotExporter] // plot results with R
   public class EfCoreBenchmarks
   {
+    private readonly HRContext context;
 
-    [Benchmark]
-    public void ToListCount()
+    public EfCoreBenchmarks()
     {
-      using var context = new HRContext();
-      context.Employees.ToList().Count();
+      context = new HRContext();
     }
 
+
+    // This will translate into: SELECT COUNT(*) FROM Employees
     [Benchmark]
-    public void ListEmployees()
+    public void EmployeesCount()
     {
-      using var context = new HRContext();
       context.Employees.Count();
+    }
+
+    // This will translate into: SELECT * FROM Employees --all of the columns
+    // This returns all the employees, but none of this data will be used
+    [Benchmark]
+    public void EmployeesToListCount()
+    {
+      context.Employees.ToList().Count();
     }
 
     [Benchmark]
     public void IEnumerableEmployees()
     {
-      GetEmployeesAsEnumerable();
+      var employees = GetEmployeesAsEnumerable();
+      employees.Count();
     }
 
     [Benchmark]
     public void IQueryableEmployees()
     {
-      GetEmployeesAsIQueryable();
+      var employees = GetEmployeesAsIQueryable();
+      employees.Count();
     }
 
-    // This will translate into: SELECT * FROM Employees
+    // This will translate into: SELECT * FROM Employees --all of the columns
+    // This returns all the employees, but none of this data will be used
     IEnumerable<Employee> GetEmployeesAsEnumerable()
     {
-      using var context = new HRContext();
       return context.Employees;
     }
 
+    // This will translate into: SELECT COUNT(*) FROM Employees
     IQueryable<Employee> GetEmployeesAsIQueryable()
     {
-      using var context = new HRContext();
       return context.Employees;
     }
 

@@ -106,5 +106,9 @@ static List<Employee> ReadCSV(string filePath)
 
 BenchmarkRunner.Run<EfCoreBenchmarks>();
 
+//var bm = new EfCoreBenchmarks();
+//bm.IQueryableEmployees();
+//bm.IEnumerableEmployees();
+
 
 

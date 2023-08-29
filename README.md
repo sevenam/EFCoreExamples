@@ -2,7 +2,13 @@
 
 ## BenchmarkDotNet
 
-First, install R and add it to the path (e.g.: C:\Program Files\R\R-4.3.1\bin):
+Add BenchmarkDotNet NuGet package to the csproj file:
+
+```xml
+<PackageReference Include="BenchmarkDotNet" Version="0.13.7" />
+```
+
+Install R and add it to the path (e.g.: C:\Program Files\R\R-4.3.1\bin):
 
 ```bash
 winget install -e --id RProject.R
@@ -23,6 +29,7 @@ and in the benchmark file add the wanted veresions as SimpleJobs():
 ```cs
   [SimpleJob(RuntimeMoniker.Net60)]
   [SimpleJob(RuntimeMoniker.Net70)]
+  [MemoryDiagnoser(true)] // include memory allocation results
   [RPlotExporter] // generates plots using R
   public class EfCoreBenchmarks
 ```
