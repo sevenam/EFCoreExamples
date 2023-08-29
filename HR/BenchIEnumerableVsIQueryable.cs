@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,53 +17,48 @@ namespace HR
   [MaxIterationCount(2)] // max number of iterations
   [RankColumn] // rank the results
   [RPlotExporter] // plot results with R
-  public class EfCoreBenchmarks
+  [MeanColumn] // mean of the results
+  [BaselineColumn]
+  public class BenchIEnumerableVsIQueryable
   {
     private readonly HRContext context;
 
-    public EfCoreBenchmarks()
+    public BenchIEnumerableVsIQueryable()
     {
       context = new HRContext();
     }
 
-
-    // This will translate into: SELECT COUNT(*) FROM Employees
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public void EmployeesCount()
     {
-      context.Employees.Count();
+      context.Employees.Count(); // This will translate into: SELECT COUNT(*) FROM Employees
     }
 
-    // This will translate into: SELECT * FROM Employees --all of the columns
-    // This returns all the employees, but none of this data will be used
     [Benchmark]
     public void EmployeesToListCount()
     {
-      context.Employees.ToList().Count();
+      context.Employees.ToList().Count(); // This will translate into: SELECT * FROM Employees --all of the columns
     }
 
     [Benchmark]
     public void IEnumerableEmployees()
     {
-      var employees = GetEmployeesAsEnumerable();
+      var employees = GetEmployeesAsEnumerable(); // This will translate into: SELECT * FROM Employees --all of the columns
       employees.Count();
     }
 
     [Benchmark]
     public void IQueryableEmployees()
     {
-      var employees = GetEmployeesAsIQueryable();
+      var employees = GetEmployeesAsIQueryable(); // This will translate into: SELECT COUNT(*) FROM Employees
       employees.Count();
     }
 
-    // This will translate into: SELECT * FROM Employees --all of the columns
-    // This returns all the employees, but none of this data will be used
     IEnumerable<Employee> GetEmployeesAsEnumerable()
     {
       return context.Employees;
     }
 
-    // This will translate into: SELECT COUNT(*) FROM Employees
     IQueryable<Employee> GetEmployeesAsIQueryable()
     {
       return context.Employees;

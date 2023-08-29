@@ -91,7 +91,7 @@ static List<Employee> ReadCSV(string filePath)
 
 
 
-
+// seed data:
 //var employees = ReadCSV("data.csv");
 
 //Console.WriteLine($"{employees.Count} row(s) found");
@@ -104,11 +104,32 @@ static List<Employee> ReadCSV(string filePath)
 
 //context.SaveChanges();
 
-BenchmarkRunner.Run<EfCoreBenchmarks>();
 
+
+
+// debugging:
 //var bm = new EfCoreBenchmarks();
 //bm.IQueryableEmployees();
 //bm.IEnumerableEmployees();
+
+
+
+
+
+
+// #1 IEnumerable vs IQueryable
+//BenchmarkRunner.Run<BenchIEnumerableVsIQueryable>();
+
+// #2 AsNoTracking: tracks entities in case you do SaveChanges() on the context - can be used when you only want to read data
+BenchmarkRunner.Run<BenchAsNoTracking>(); // database provider could matter (sqlite/mssql/postgres/etc)
+
+
+
+
+
+
+
+
 
 
 
