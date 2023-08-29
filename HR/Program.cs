@@ -1,5 +1,7 @@
 ﻿using BenchmarkDotNet.Running;
 using HR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 static List<Employee> ReadCSV(string filePath)
 {
@@ -118,6 +120,8 @@ static List<Employee> ReadCSV(string filePath)
 
 
 
+// References: https://www.youtube.com/watch?v=dDANjr5MCew
+// This code/repo: https://github.com/sevenam/EFCoreExamples
 
 
 // #1 IEnumerable vs IQueryable
@@ -127,15 +131,40 @@ static List<Employee> ReadCSV(string filePath)
 //BenchmarkRunner.Run<BenchAsNoTracking>(); // database provider could matter (sqlite/mssql/postgres/etc)
 
 // #3 ExplicitIncludes: The includes will explicitly force inclusion of data even though it is never used
-BenchmarkRunner.Run<BenchExplicitIncludes>(); // even if you use select the whole included entity will still be included
+//BenchmarkRunner.Run<BenchExplicitIncludes>(); // even if you use select the whole included entity will still be included
 
 
+// #4 Pagination: Mostly the same as #1. Make sure to use IQueryable for the query, so you can use it to both:
+//     - do query.CountAsync() to get the total count (and as it is IQueryable it will not get all the data)
+//     - do Skip() and Take() to get the page
 
+// #5 (Non)-Cancellable queries: Some queries are just heavy, and if the user cancels the HTTP request in the app
+//    the query will still run on the db server unless cancellation tokens are used
+//    scenario: query takes 30 seconds to run and user spams F5 to refresh the page constantly...
+//    solution: pass the cancellation token to the db query in e.g. ToListAsync(ct);
+//    example:
 
+//[HttpGet]
+//public async Task<IActionResult> GetEmployees(CancellationToken cancellationToken)
+//{
+//  result = await dbContext.Employees.ToListAsync(cancellationToken);
+//  return result;
+//}
 
+// #6 Inefficient update/delete
+// Before EF7 - we had to load all the entities we wanted to change first, but now: update directly on the db without fetching first
+BenchmarkRunner.Run<BenchUpdate>();
 
+// Bonus: Use DbContextPool to re-use existing DbContext instances (and spin up fewer new ones)
+// Improves resiliency and performance (e.g. F5 spamming will reuse the same DbContext instance)
+// example:
 
+//services.AddDbContextPool<DbContext>(options =>
+//{
+//  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+//})
 
+// Bonus: TagWith() for simpler debugging (maybe even tag with class name and method name)
+// example:
 
-
-
+// var result = context.Employees.TagWith("Fetching all of the employees!").ToList();
