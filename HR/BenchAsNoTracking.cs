@@ -37,7 +37,7 @@ namespace HR
     [Benchmark]
     public void EmployeeAsNoTracking()
     {
-      context.Employees.Include(x => x.Skills).Include(x => x.Department).ToList();
+      context.Employees.Include(x => x.Skills).Include(x => x.Department).AsNoTracking().ToList();
     }
 
 
