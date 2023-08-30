@@ -125,7 +125,7 @@ static List<Employee> ReadCSV(string filePath)
 
 
 // #1 IEnumerable vs IQueryable
-//BenchmarkRunner.Run<BenchIEnumerableVsIQueryable>();
+BenchmarkRunner.Run<BenchIEnumerableVsIQueryable>();
 
 // #2 AsNoTracking: tracks entities in case you do SaveChanges() on the context - can be used when you only want to read data
 //BenchmarkRunner.Run<BenchAsNoTracking>(); // database provider could matter (sqlite/mssql/postgres/etc)
@@ -153,7 +153,7 @@ static List<Employee> ReadCSV(string filePath)
 
 // #6 Inefficient update/delete
 // Before EF7 - we had to load all the entities we wanted to change first, but now: update directly on the db without fetching first
-BenchmarkRunner.Run<BenchUpdate>();
+//BenchmarkRunner.Run<BenchUpdate>();
 
 // Bonus: Use DbContextPool to re-use existing DbContext instances (and spin up fewer new ones)
 // Improves resiliency and performance (e.g. F5 spamming will reuse the same DbContext instance)
