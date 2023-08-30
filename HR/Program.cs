@@ -125,7 +125,7 @@ static List<Employee> ReadCSV(string filePath)
 
 
 // #1 IEnumerable vs IQueryable
-BenchmarkRunner.Run<BenchIEnumerableVsIQueryable>();
+//BenchmarkRunner.Run<BenchIEnumerableVsIQueryable>();
 
 // #2 AsNoTracking: tracks entities in case you do SaveChanges() on the context - can be used when you only want to read data
 //BenchmarkRunner.Run<BenchAsNoTracking>(); // database provider could matter (sqlite/mssql/postgres/etc)

@@ -40,7 +40,7 @@ namespace HR
     [Benchmark]
     public void UpdateSwapNamesSelectFirst()
     {
-      var result = context.Employees.TagWith("Fetching all of the employees!").ToList();
+      var result = context.Employees.TagWith(nameof(UpdateSwapNamesSelectFirst)).ToList();
       foreach(var employee in result)
       {
         employee.FirstName = employee.LastName;
